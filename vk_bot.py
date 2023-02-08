@@ -2,19 +2,34 @@ from main import *
 from db import *
 from make_messages import *
 from pprint import pprint
+from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
+'''токен сообщества'''
 token = 'vk1.a.H1O2MeQhqORWS_wXxjnarAEJEnwbbte2M6-dD9up-0tjdAKzGgnESWbgUb-OXm-SufX2uMlqhY9yjG7iIRtIi_J1sA_xJY0dpfMmIKvo3BF2hyg2eKCfDuoA4k5QvFhFtQDXCv5XKustiWYWpKzeFK00fIKJYGWlBRuXQPPe938V3ZVgLodatSCWnJPORofvo3OYGDxKEOcy6kwa7lKohQ'
-# token = 'vk1.a.WizWG1P2L55Y71Pw1_Nyee2FPnT6NW-RAPrXfu_8a9sq3G7n1PUepVbE5fhFCo-qjOgivGE8mwbVL2FOoTIDIyNLGvV2aK069lEdAyQvZ7UYxH-TVyYMSVIiyHBJfwgZynXMR_J27nTLDzeWLncwHH9WQELOz-0gG3_JGy9pEzeaDGAShmkRkj9lWwrZ6tjpn38O7nUvwfai6_aYmp4FzQ'
 
+
+def current_keyboard():
+    """
+    Creates a keyboard to interact with the chatbot.
+    :return Keyboard JSON-object
+    """
+    keyboard = VkKeyboard(one_time=False)
+    keyboard.add_button('Хочу познакомиться', color=VkKeyboardColor.SECONDARY)
+    keyboard.add_button('Следующий', color=VkKeyboardColor.PRIMARY)
+    keyboard.add_button('Добавь в избранное', color=VkKeyboardColor.POSITIVE)
+    keyboard.add_line()
+    keyboard.add_button('Список избранных', color=VkKeyboardColor.SECONDARY)
+    keyboard.add_button('Помощь', color=VkKeyboardColor.NEGATIVE)
+    return keyboard.get_keyboard()
 
 vk = vk_api.VkApi(token=token)
 longpoll = VkLongPoll(vk)
 
 
-
 def write_msg(user_id, message):
     vk.method('messages.send', {
-              'user_id': user_id, 'message': message,  'random_id': randrange(10 ** 7)})
+              'user_id': user_id, 'message': message,  'random_id': randrange(10 ** 7), 'keyboard': current_keyboard()})
+
 
 for event in longpoll.listen():
 
@@ -27,26 +42,28 @@ for event in longpoll.listen():
             name_user = user.user_name(user_id)
             if request == "Привет":
                 write_msg(event.user_id, f'Хай, {name_user}! Для запуска поиска введите Хочу познакомиться.\n'
-            f'Список доступных команд: Следующий, Добавь в избранное, Покажи избранных, Очистить избранных')
+                          f'\nСписок доступных команд: Следующий, Добавь в избранное, Покажи избранных, Очистить избранных')
             elif request == "Пока":
                 write_msg(event.user_id, "Пока((")
             elif request == "Помощь":
                 write_msg(event.user_id, f'\nДля запуска поиска введите Хочу познакомиться.'
-            f'Список доступных команд: Следующий, Добавь в избранное, Покажи избранных, Очистить избранных')
+                          f'\nСписок доступных команд: Следующий, Добавь в избранное, Покажи избранных, Очистить избранных')
             elif request == "Как дела?":
                 write_msg(event.user_id, f"Отлично, {name_user}")
 
             elif request == "Хочу познакомиться":
-                write_msg(event.user_id, f"Минутку, {name_user}, подбираем пользователей:")
+                write_msg(event.user_id,
+                          f"Минутку, {name_user}, подбираем пользователей:")
                 count = 0
                 create_db()
-                vk_b.json_info(user_id)
+                # vk_b.json_info(user_id)
                 insert_users(user_id)
                 insert_matched_users(user_id)
                 insert_photos(user_id)
-                show_users()
-                show_matched_users()
-                write_msg(event.user_id, f"Отлично, {name_user}! Вам подошли следующие пользователи: ")
+                # show_users()
+                # show_matched_users()
+                write_msg(
+                    event.user_id, f"Отлично, {name_user}! Вам подошли следующие пользователи: ")
                 main(user_id, count)
             elif request == "Добавь в избранное":
                 insert_favorites(count)
@@ -55,8 +72,8 @@ for event in longpoll.listen():
                 write_msg(event.user_id, f"Список избранных:")
                 list_of_favorites(user_id)
             elif request == "Следующий":
-                    count +=1
-                    main(user_id, count)
+                count += 1
+                main(user_id, count)
             elif request == "Добавь в избранное":
                 insert_favorites(count)
                 write_msg(event.user_id, f"Пользователь добавлен в избранное")

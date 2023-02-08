@@ -36,9 +36,9 @@ def create_table_matched_users():
     with connection.cursor() as cursor:
         cursor.execute(
             """CREATE TABLE IF NOT EXISTS matched_users(
-                id_matched INTEGER PRIMARY KEY,
+                id_matched INTEGER NOT NULL,
                 name varchar NOT NULL,
-                link varchar NOT NULL,
+                link varchar NOT NULL PRIMARY KEY,
                 vk_id_u INTEGER REFERENCES users(vk_id_u));"""
         )
     print("[INFO] Table MATCHED_USERS was created.")
@@ -51,9 +51,9 @@ def create_table_favorite_users():
         cursor.execute(
             """CREATE TABLE IF NOT EXISTS favorite_users(
                 id_favorite serial NOT NULL,
-                id_matched INTEGER PRIMARY KEY REFERENCES matched_users(id_matched),
+                id_matched INTEGER PRIMARY KEY,
                 name varchar NOT NULL,
-                link varchar NOT NULL);"""
+                link varchar NOT NULL REFERENCES matched_users(link));"""
         )
     print("[INFO] Table FAVORITE_USERS was created.")
 
@@ -64,7 +64,7 @@ def create_table_photos():
         cursor.execute(
             """CREATE TABLE IF NOT EXISTS photos(
                 id_photos serial NOT NULL PRIMARY KEY,
-                id_matched INTEGER REFERENCES matched_users(id_matched),
+                link varchar NOT NULL REFERENCES matched_users(link),
                 photo_1 varchar NOT NULL,
                 photo_2 varchar NULL,
                 photo_3 varchar NULL);"""
@@ -110,7 +110,7 @@ def drop_photos():
 
 def insert_matched_users(user_id):
     '''запись данных в таблицу с пользователями, подошедшими под критерии поиска'''
-    m_info = vk_b.make_list_id_2(user_id)
+    m_info = vk_b.make_list_id(user_id)
     for item in m_info:
         with connection.cursor() as cursor:
             cursor.execute(f"""INSERT INTO matched_users (id_matched, name, link, vk_id_u)
@@ -135,28 +135,45 @@ def insert_users(user_id):
         cursor.execute(f"""INSERT INTO users (name, age, sex, city, vk_id_u)
             VALUES ('{u_name}', '{age}', '{sex}', '{city}', '{vk_id}');"""
                        )
-    print(f'запись о пользователе {u_name} внесена в базу')
+    print(f'Запись о пользователе {u_name} внесена в базу')
 
+
+# def insert_photos(user_id):
+#     ''''''
+#     p_info = vk_b.photo_profile(user_id)
+#     with connection.cursor() as cursor:
+#         for item in p_info:
+#             if len(item) == 1:
+#                 cursor.execute(f"""INSERT INTO photos (id_matched, photo_1)
+#                             VALUES ('{item[0][2]}', '{item[0][1]}');"""
+#                                )
+#             elif len(item) == 2:
+#                 cursor.execute(f"""INSERT INTO photos (id_matched, photo_1, photo_2)
+#                             VALUES ('{item[0][2]}', '{item[0][1]}', '{item[1][1]}');"""
+#                                )
+#             elif len(item) == 3:
+#                 cursor.execute(f"""INSERT INTO photos (id_matched, photo_1, photo_2, photo_3)
+#                             VALUES ('{item[0][2]}', '{item[0][1]}', '{item[1][1]}', '{item[2][1]}');"""
+#                                )
+#     print('Данные о фотографиях внесены')
 
 def insert_photos(user_id):
     ''''''
-    p_info = vk_b.photo_profile(user_id)
+    p_info = vk_b.json_info(user_id)
     with connection.cursor() as cursor:
         for item in p_info:
-            if len(item) == 1:
-                cursor.execute(f"""INSERT INTO photos (id_matched, photo_1)
-                            VALUES ('{item[0][2]}', '{item[0][1]}');"""
+            if len(item[2]) == 1:
+                cursor.execute(f"""INSERT INTO photos (link, photo_1)
+                            VALUES ('{item[1]}', '{item[2][0]}');"""
                                )
-            elif len(item) == 2:
-                cursor.execute(f"""INSERT INTO photos (id_matched, photo_1, photo_2)
-                            VALUES ('{item[0][2]}', '{item[0][1]}', '{item[1][1]}');"""
+            elif len(item[2]) == 2:
+                cursor.execute(f"""INSERT INTO photos (link, photo_1, photo_2)
+                            VALUES ('{item[1]}', '{item[2][0]}', '{item[2][1]}');"""
                                )
-            elif len(item) == 3:
-                cursor.execute(f"""INSERT INTO photos (id_matched, photo_1, photo_2, photo_3)
-                            VALUES ('{item[0][2]}', '{item[0][1]}', '{item[1][1]}', '{item[2][1]}');"""
+            elif len(item[2]) == 3:
+                cursor.execute(f"""INSERT INTO photos (link, photo_1, photo_2, photo_3)
+                            VALUES ('{item[1]}', '{item[2][0]}', '{item[2][1]}', '{item[2][2]}');"""
                                )
-            # else:
-            #     print('неверная длина списка photo_profile()')
     print('Данные о фотографиях внесены')
 
 
@@ -234,5 +251,3 @@ def create_db():
 # insert_photos(8079094)
 
 # show_matched_users()
-
-

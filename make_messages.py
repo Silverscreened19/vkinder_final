@@ -7,13 +7,13 @@ import requests
 from io import BytesIO
 from db import show_favorites
 
-
+'''токен сообщества'''
 TOKEN = 'vk1.a.H1O2MeQhqORWS_wXxjnarAEJEnwbbte2M6-dD9up-0tjdAKzGgnESWbgUb-OXm-SufX2uMlqhY9yjG7iIRtIi_J1sA_xJY0dpfMmIKvo3BF2hyg2eKCfDuoA4k5QvFhFtQDXCv5XKustiWYWpKzeFK00fIKJYGWlBRuXQPPe938V3ZVgLodatSCWnJPORofvo3OYGDxKEOcy6kwa7lKohQ'
 # PEER_ID = '8079094' # ID пользователя, которому отправляются подошедшие его профилю фото других пользователей
 
 # def upload_photo(upload, url):
 #     img = requests.get(url).content
-    # f = BytesIO(img)
+# f = BytesIO(img)
 
 #     response = upload.photo_messages(f)[0]
 
@@ -79,7 +79,6 @@ TOKEN = 'vk1.a.H1O2MeQhqORWS_wXxjnarAEJEnwbbte2M6-dD9up-0tjdAKzGgnESWbgUb-OXm-Su
 #     # vk_b.json_info(PEER_ID)
 
 
-
 # #     print('ALL!!!')
 # # if __name__ == '__main__':
 # #     main(PEER_ID)
@@ -106,8 +105,9 @@ def send_photo(vk, peer_id, owner_id, photo_id, access_key):
     )
     return attachment
 
+
 def send_message(vk, PEER_ID, message):
-    set2 = vk_b.make_list_id_2(PEER_ID)
+    set2 = vk_b.make_list_id(PEER_ID)
     for item2 in set2:
         name = item2['info']['name']
         user_link = item2['info']['user_link']
@@ -118,7 +118,8 @@ def send_message(vk, PEER_ID, message):
             message=message
         )
 
-def send_all_photo(vk, PEER_ID): # изначальная функция
+
+def send_all_photo(vk, PEER_ID):  # изначальная функция
     vk_session = VkApi(token=TOKEN)
     vk = vk_session.get_api()
     upload = VkUpload(vk)
@@ -137,8 +138,9 @@ def send_all_photo(vk, PEER_ID): # изначальная функция
         for i in url_list:
             send_photo(vk, PEER_ID, *upload_photo(upload, i))
 
+
 def send_all_photo_2(vk, PEER_ID, count):
-    with open ('all_data.json') as f:
+    with open('all_data.json') as f:
         set = json.load(f)
     vk_session = VkApi(token=TOKEN)
     vk = vk_session.get_api()
@@ -157,10 +159,11 @@ def send_all_photo_2(vk, PEER_ID, count):
             send_photo(vk, PEER_ID, *upload_photo(upload, i))
     else:
         vk.messages.send(
-                random_id=get_random_id(),
-                peer_id=PEER_ID,
-                message='Пользователей больше нет'
-            )
+            random_id=get_random_id(),
+            peer_id=PEER_ID,
+            message='Пользователей больше нет'
+        )
+
 
 def main(PEER_ID, count):
     vk_session = VkApi(token=TOKEN)
@@ -177,7 +180,7 @@ def list_of_favorites(user_id):
         random_id=get_random_id(),
         peer_id=user_id,
         message=message
-        )
+    )
 
 
 # pprint(show_favorites())

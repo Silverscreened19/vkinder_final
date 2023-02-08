@@ -84,6 +84,13 @@
         }
     },
     {
+        "u_id": 97948,
+        "info": {
+            "name": "Денис Прохоров",
+            "user_link": "https://vk.com/id97948"
+        }
+    },
+    {
         "u_id": 900482,
         "info": {
             "name": "Alex Yakunin",
@@ -158,111 +165,6 @@
         "info": {
             "name": "Демьян Бедный",
             "user_link": "https://vk.com/id100628081"
-        }
-    },
-    {
-        "u_id": 29425257,
-        "info": {
-            "name": "Александр Виге",
-            "user_link": "https://vk.com/id29425257"
-        }
-    },
-    {
-        "u_id": 14323147,
-        "info": {
-            "name": "Александр Савченко",
-            "user_link": "https://vk.com/id14323147"
-        }
-    },
-    {
-        "u_id": 571578847,
-        "info": {
-            "name": "Руслан Сергеевич",
-            "user_link": "https://vk.com/id571578847"
-        }
-    },
-    {
-        "u_id": 1388542,
-        "info": {
-            "name": "Виталий Криницкий",
-            "user_link": "https://vk.com/id1388542"
-        }
-    },
-    {
-        "u_id": 1825868,
-        "info": {
-            "name": "Владимир Шалькевич",
-            "user_link": "https://vk.com/id1825868"
-        }
-    },
-    {
-        "u_id": 158875434,
-        "info": {
-            "name": "Владислав Арапов",
-            "user_link": "https://vk.com/id158875434"
-        }
-    },
-    {
-        "u_id": 12091371,
-        "info": {
-            "name": "Алексей Фомичев",
-            "user_link": "https://vk.com/id12091371"
-        }
-    },
-    {
-        "u_id": 3786397,
-        "info": {
-            "name": "Сергей Козырев",
-            "user_link": "https://vk.com/id3786397"
-        }
-    },
-    {
-        "u_id": 1523330,
-        "info": {
-            "name": "Арсений Кудряшов",
-            "user_link": "https://vk.com/id1523330"
-        }
-    },
-    {
-        "u_id": 9157589,
-        "info": {
-            "name": "Дмитрий Ice-Cream",
-            "user_link": "https://vk.com/id9157589"
-        }
-    },
-    {
-        "u_id": 18011958,
-        "info": {
-            "name": "Виталий Савельев",
-            "user_link": "https://vk.com/id18011958"
-        }
-    },
-    {
-        "u_id": 453572047,
-        "info": {
-            "name": "Виктор Юсупов",
-            "user_link": "https://vk.com/id453572047"
-        }
-    },
-    {
-        "u_id": 27454213,
-        "info": {
-            "name": "Кирилл Касатиков",
-            "user_link": "https://vk.com/id27454213"
-        }
-    },
-    {
-        "u_id": 508634138,
-        "info": {
-            "name": "Константин Балобанов",
-            "user_link": "https://vk.com/id508634138"
-        }
-    },
-    {
-        "u_id": 66457495,
-        "info": {
-            "name": "Андрей Сабуров",
-            "user_link": "https://vk.com/id66457495"
         }
     }
 ]
