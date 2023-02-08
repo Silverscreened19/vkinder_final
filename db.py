@@ -9,7 +9,7 @@ vk_b = VK_b()
 connection = psycopg2.connect(
     host='localhost',
     user='postgres',
-    password='090981',
+    password='',
     database='vkinder'
 )
 
@@ -28,7 +28,6 @@ def create_table_user():
                 vk_id_u INTEGER PRIMARY KEY);"""
         )
     print("[INFO] Table USERS was created.")
-# id_user serial NOT NULL PRIMARY KEY,
 
 
 def create_table_matched_users():
@@ -42,7 +41,6 @@ def create_table_matched_users():
                 vk_id_u INTEGER REFERENCES users(vk_id_u));"""
         )
     print("[INFO] Table MATCHED_USERS was created.")
-# id_matched serial NOT NULL PRIMARY KEY,
 
 
 def create_table_favorite_users():
@@ -135,30 +133,11 @@ def insert_users(user_id):
         cursor.execute(f"""INSERT INTO users (name, age, sex, city, vk_id_u)
             VALUES ('{u_name}', '{age}', '{sex}', '{city}', '{vk_id}');"""
                        )
-    print(f'Запись о пользователе {u_name} внесена в базу')
+    print(f'Запись о пользователе {u_name} внесена в бд')
 
-
-# def insert_photos(user_id):
-#     ''''''
-#     p_info = vk_b.photo_profile(user_id)
-#     with connection.cursor() as cursor:
-#         for item in p_info:
-#             if len(item) == 1:
-#                 cursor.execute(f"""INSERT INTO photos (id_matched, photo_1)
-#                             VALUES ('{item[0][2]}', '{item[0][1]}');"""
-#                                )
-#             elif len(item) == 2:
-#                 cursor.execute(f"""INSERT INTO photos (id_matched, photo_1, photo_2)
-#                             VALUES ('{item[0][2]}', '{item[0][1]}', '{item[1][1]}');"""
-#                                )
-#             elif len(item) == 3:
-#                 cursor.execute(f"""INSERT INTO photos (id_matched, photo_1, photo_2, photo_3)
-#                             VALUES ('{item[0][2]}', '{item[0][1]}', '{item[1][1]}', '{item[2][1]}');"""
-#                                )
-#     print('Данные о фотографиях внесены')
 
 def insert_photos(user_id):
-    ''''''
+    '''запись данных о фото пользователей, подошедших под параметры'''
     p_info = vk_b.json_info(user_id)
     with connection.cursor() as cursor:
         for item in p_info:
@@ -178,14 +157,18 @@ def insert_photos(user_id):
 
 
 def insert_favorites(count):
-    with open('all_data.json') as f:
-        set = json.load(f)
-        name = set[count][0]
-        user_link = set[count][1]
-        id_matched = user_link.split('id')[1]
-    with connection.cursor() as cursor:
-        cursor.execute(f"""INSERT INTO favorite_users (id_matched, name, link)
-                    VALUES('{id_matched}', '{name}', '{user_link}')""")
+    '''запись данных об избранных пользователях'''
+    try:
+        with open('all_data.json', encoding='utf-8') as f:
+            set = json.load(f)
+            name = set[count][0]
+            user_link = set[count][1]
+            id_matched = user_link.split('id')[1]
+        with connection.cursor() as cursor:
+            cursor.execute(f"""INSERT INTO favorite_users (id_matched, name, link)
+                        VALUES('{id_matched}', '{name}', '{user_link}')""")
+    except:
+        return f'Неверная команда'
 
 
 def show_users():
@@ -209,7 +192,6 @@ def show_photos():
         pprint(cursor.fetchall())
 
 
-
 def show_favorites():
     '''вывод данных о пользователей, добавленных в список избранных'''
     try:
@@ -221,6 +203,7 @@ def show_favorites():
                 line = f'\n{i[0]} {i[1]}'
                 fav_list.append(line)
             return fav_list
+
     except:
         return f'Список избранных пуст'
 
@@ -234,20 +217,3 @@ def create_db():
     create_table_matched_users()
     create_table_favorite_users()
     create_table_photos()
-
-# show_favorites()
-
-# drop_users()
-# drop_matched_users()
-# drop_favorite_users()
-# drop_photos()
-# create_table_user()
-# create_table_matched_users()
-# create_table_favorite_users()
-# create_table_photos()
-# insert_users(8079094)
-# show_users()
-# insert_matched_users(8079094)
-# insert_photos(8079094)
-
-# show_matched_users()

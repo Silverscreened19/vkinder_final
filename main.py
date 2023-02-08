@@ -1,20 +1,19 @@
 import requests
 import json
-from pprint import pprint
 import time
 import datetime
 from dateutil.relativedelta import relativedelta
 from vk_api.longpoll import VkLongPoll, VkEventType
 from random import randrange
 import vk_api
-from vk_api.longpoll import VkLongPoll, VkEventType
+from config import token_app, token_vk
 
 
 class User:
 
     def __init__(self):
-        '''токен сообщества'''
-        self.token = 'vk1.a.H1O2MeQhqORWS_wXxjnarAEJEnwbbte2M6-dD9up-0tjdAKzGgnESWbgUb-OXm-SufX2uMlqhY9yjG7iIRtIi_J1sA_xJY0dpfMmIKvo3BF2hyg2eKCfDuoA4k5QvFhFtQDXCv5XKustiWYWpKzeFK00fIKJYGWlBRuXQPPe938V3ZVgLodatSCWnJPORofvo3OYGDxKEOcy6kwa7lKohQ'
+        '''токен сообщества:'''
+        self.token = token_app
         self.vk = vk_api.VkApi(token=self.token)
         self.longpoll = VkLongPoll(self.vk)
 
@@ -98,7 +97,8 @@ class User:
                 age = relativedelta(cur_year, byear).years
                 return age
             else:
-                self.write_msg(user_id, 'Введите возраст (минимум 18 лет): ')
+                self.write_msg(
+                    user_id, 'Введите ваш возраст, если вам есть 18 лет: ')
                 for event in self.longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                         age = event.text
@@ -108,9 +108,8 @@ class User:
 class VK_b:
 
     def __init__(self, version='5.131'):
-        # self.token = 'vk1.a.H1O2MeQhqORWS_wXxjnarAEJEnwbbte2M6-dD9up-0tjdAKzGgnESWbgUb-OXm-SufX2uMlqhY9yjG7iIRtIi_J1sA_xJY0dpfMmIKvo3BF2hyg2eKCfDuoA4k5QvFhFtQDXCv5XKustiWYWpKzeFK00fIKJYGWlBRuXQPPe938V3ZVgLodatSCWnJPORofvo3OYGDxKEOcy6kwa7lKohQ'
-        '''индивидуальный вк токен пользователя'''
-        self.token = 'vk1.a.WizWG1P2L55Y71Pw1_Nyee2FPnT6NW-RAPrXfu_8a9sq3G7n1PUepVbE5fhFCo-qjOgivGE8mwbVL2FOoTIDIyNLGvV2aK069lEdAyQvZ7UYxH-TVyYMSVIiyHBJfwgZynXMR_J27nTLDzeWLncwHH9WQELOz-0gG3_JGy9pEzeaDGAShmkRkj9lWwrZ6tjpn38O7nUvwfai6_aYmp4FzQ'
+        '''индивидуальный вк токен пользователя:'''
+        self.token = token_vk
         self.version = version
         self.params_2 = {'access_token': self.token, 'v': self.version}
 
@@ -124,7 +123,7 @@ class VK_b:
         age = user.user_age(user_id)
         json_data = []
         params = {'sex': sex, 'city': city, 'fields': 'sex, city, bdate',
-                  'age_from': age, 'age_to': age, 'count': 50}
+                  'age_from': age, 'age_to': age, 'count': 15}
         res = requests.get(url, params={**self.params_2, **params}).json()
         for item in res['response']['items']:
             if 'city' in item and city_title in item['city']['title'] and 'bdate' in item and len(item['bdate'].split('.')) == 3 and item['is_closed'] == False:
@@ -148,7 +147,6 @@ class VK_b:
         photo_list_3 = []
         photo_list_all = []
         photo_list = []
-        # теперь возвращает словарь с ключом u_id
         set = self.make_list_id(user_id)
         for item in set:
             id_ = item['u_id']
@@ -191,7 +189,7 @@ class VK_b:
             elif len(item2) <= 3:
                 photo_list_3.append(item2)
         photo_list_3.extend(photo_list_2)
-        with open('photo_profile_3.json', 'w') as f:
+        with open('photo_profile_3.json', 'w', encoding='utf-8') as f:
             json.dump(photo_list_3, f, ensure_ascii=False, indent=4)
         return photo_list_3
 
@@ -200,9 +198,8 @@ class VK_b:
         json_set = []
         json_data_2 = {}
         json_all_data2 = []
-        # список ФИО пользователя и ссылки на профиль
         set = self.make_list_id(user_id)
-        set2 = self.photo_profile(user_id)  # список фото пользователей
+        set2 = self.photo_profile(user_id)
         for id_ in set:
             for item in set2:
                 if id_['u_id'] == item[0][2]:
@@ -227,11 +224,8 @@ class VK_b:
         for i in range(len(json_all_data2)):
             name = set[i]["info"]["name"]
             user_link = set[i]["info"]["user_link"]
-            # json_all.append([set[i]["info"]["user_link"]])
-            # json_set.append(set[i]["info"]["name"])
             json_set.append(name)
             json_set.append(user_link)
-            # json_all.append(json_set)
             json_set.append(json_all_data2[i])
             json_all.append(json_set)
             json_set = []
@@ -243,14 +237,3 @@ class VK_b:
 
 user = User()
 vk_b = VK_b()
-
-# 2373876
-# 8079094
-# 1199790
-
-
-# with open ('all_data.json') as f:
-#     data = json.load(f)
-# for item in data:
-
-#     print(item[2])
