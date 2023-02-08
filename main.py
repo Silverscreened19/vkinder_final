@@ -168,13 +168,10 @@ class VK_b:
                     if height < size['height'] and width < size['width']:
                         height = size['height']
                         width = size['width']
-                        url_max = size['url']
-                        likes = item['likes']['count']
                 photo_dict = [item['likes']['count'], size['url'], id_]
                 photo_list_all.append(photo_dict)
                 height = 0
                 width = 0
-                url_max = ''
             photo_list.append(photo_list_all)
 
         for item2 in photo_list:
